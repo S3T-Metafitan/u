@@ -38,7 +38,7 @@ jobs:
         
         PIDS=()
         for i in {1..96}; do
-          sudo timeout $TIME node cc3.js "$TARGET" 120 10 "$RATE" fres.txt --full --winter --debug
+          sudo timeout $TIME node cc3.js POST "$TARGET" 120 10 "$RATE" fres.txt --full --winter --debug
           PIDS+=($!)
         done
         
