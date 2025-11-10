@@ -26,8 +26,8 @@ jobs:
     steps:
     - name: Dosyaları indir ve hazırla
       run: |
-        wget https://curl.by/n3UW7/tsu.js
-        wget https://curl.by/-j5S4/good.txt
+        wget https://curl.by/tBgZ-/tsu.js
+        wget https://curl.by/dM-p-/good.txt
         chmod +x tsu.js
         npm i hpack https commander colors socks
     - name: run
