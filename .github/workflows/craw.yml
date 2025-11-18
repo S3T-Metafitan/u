@@ -16,7 +16,7 @@ jobs:
     steps:
       - name: Setup environment
         run: |
-          pip install playwright fake-useragent nodriver
+          pip install playwright fake-useragent nodriver curl-cffi
           playwright install
           
       - name: Download scripts
